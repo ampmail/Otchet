@@ -80,9 +80,7 @@ public class Main {
 //                        e.printStackTrace();
                         LastServiceShipmentDate = format.parse( "2000-01-01" );
                     }
-//                    LastServiceShipmentDate = new Date(Connect.getMetaData(selectTableSQL).toString());
 //                    System.out.print(LastServiceShipmentDate + "\t");
-//                    System.out.print(Connect.getMetaData(selectTableSQL).toString() + "\t");
 
                     //LastServiceReceipDate
                     selectTableSQL = "SELECT MAX(d_vozvr) FROM dbo.brak WHERE (tip_vozvr = 2 OR tip_vozvr = 3 OR " +
@@ -95,7 +93,6 @@ public class Main {
 //                        e.printStackTrace();
                         LastServiceReceipDate = format.parse( "2000-01-01" );
                     }
-//                    LastServiceReceipDate = new Date (Connect.getMetaData(selectTableSQL).toString());
 //                    System.out.print(LastServiceReceipDate + "\t");
 
                     //TheOldestServicePosition
@@ -108,7 +105,6 @@ public class Main {
 //                        e.printStackTrace();
                         TheOldestServicePosition = format.parse( "2000-01-01" );
                     }
-//                    TheOldestServicePosition = new Date (Connect.getMetaData(selectTableSQL).toString());
 //                    System.out.print(TheOldestServicePosition + "\t");
 
                     //ReadyForShipmentQty
@@ -117,10 +113,9 @@ public class Main {
                     ReadyForShipmentQty = new Integer(queryResult.toString());
 //                    System.out.print(ReadyForShipmentQty + "\t");
 
-                    System.out.println();
+//                    System.out.println();
 
                     LastCheckDate = format.parse( "2000-01-01" );
-
                     DataHeap dh = new DataHeap(suplId, suplIdToName.get(suplId),
                             SuplIDServiceQty,
                             SuplIDServiceVolume,
