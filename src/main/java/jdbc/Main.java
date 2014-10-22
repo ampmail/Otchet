@@ -1,9 +1,13 @@
 package jdbc;
 
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class Main {
 
@@ -12,6 +16,7 @@ public class Main {
     private static Set<Integer> suplID = new HashSet<Integer>();
     private static Map<Integer, String> suplIdToName = new HashMap<Integer, String>();
     public static List<DataHeap> resultData = new ArrayList<DataHeap>();
+    private static JFrame f;
 
     public static void main(String[] args) {
 
@@ -53,8 +58,26 @@ public class Main {
                 SimpleDateFormat format;
                 Object queryResult = null;
 
+                f = new JFrame("Processing database request");
+                f.setDefaultCloseOperation(JFrame.ICONIFIED);
+                Container content = f.getContentPane();
+                JProgressBar progressBar = new JProgressBar();
+                progressBar.setValue(0);
+                progressBar.setStringPainted(true);
+                Border border = BorderFactory.createTitledBorder("...");
+                progressBar.setBorder(border);
+                content.add(progressBar, BorderLayout.NORTH);
+                f.setSize(300, 100);
+                f.setVisible(true);
+                double valueStep = 100.0 / suplID.size();
+                double value = 0.0;
+
                 for (Integer suplId : suplID) {
-                    System.out.print(suplIdToName.get(suplId) + "\t");
+//                    System.out.println(suplIdToName.get(suplId) + "\t");
+
+                    border = BorderFactory.createTitledBorder(suplIdToName.get(suplId));
+                    value += valueStep;
+                    progressBar.setValue((int)value);
 
                     //SuplIDServiceQty
                     selectTableSQL = "SELECT COUNT(*) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID = " + suplId.toString();
@@ -142,15 +165,16 @@ public class Main {
             System.out.println("Connection closed");
         }
         String [] fieldsToShow = {"Поставщик",
-                "кол-во товара в браке (шт)",
-                "кол-во товара в браке (уе)",
-                "дата последней сверки",
-                "дата последней отправки брака поставщику",
-                "дата последнего получения брака от поставщика",
-                "самая старая позиция (по дате)",
-                "готово к отправке"};
+                "кол-во товара\nв браке (шт)",
+                "кол-во товара\nв браке (уе)",
+                "дата последней\nсверки",
+                "дата последней\nотправки брака\nпоставщику",
+                "дата последнего\nполучения брака\nот поставщика",
+                "самая старая\nпозиция (по дате)",
+                "готово\nк отправке"};
 
         if (!resultData.isEmpty()){
+            f.setVisible(false);
             otchetFrame.ShowDataInTable( resultData, fieldsToShow);
         }
 //        System.exit(0);

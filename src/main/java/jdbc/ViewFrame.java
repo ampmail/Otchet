@@ -1,17 +1,15 @@
 package jdbc;
 
 import java.awt.*;
+import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableRowSorter;
 
 public class ViewFrame {
 
@@ -31,6 +29,25 @@ public class ViewFrame {
 
         TableModel MyTableModel = new TableModel(fieldsToShow);
         JTable table = new JTable(MyTableModel);
+
+        TableRowSorter<TableModel> sorter = new TableRowSorter(MyTableModel);
+//        TableRowSorter<TableModel> sorter = new TableRowSorter(MyTableModel) {
+//            @Override
+//            public Comparator<?> getComparator(int column) {
+//                // для нулевой строки
+//                if (column == 1) {
+//                    return new Comparator<String>() {
+//                        @Override
+//                        public int compare(String s1, String s2) {
+//                            return Integer.parseInt(s1) - Integer.parseInt(s2);
+//                        }
+//                    };
+//                }
+//                // для всех остальных
+//                return super.getComparator(column);
+//            }
+//        };
+        table.setRowSorter(sorter);
 
         JScrollPane scrollPane = new JScrollPane();
         contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -71,14 +88,14 @@ public class ViewFrame {
     }
 
     void viewDBData(String msg) {
-        makeViewFrame (msg, "DbProperties", 600, 400);
+        makeViewFrame(msg, "DbProperties", 600, 400);
     }
 
     void viewErrData(String msg) {
-        makeViewFrame (msg, "Error", 400, 300);
+        makeViewFrame(msg, "Error", 400, 300);
     }
 
-    void makeViewFrame (String msg, String titul, int width, int height){
+    void makeViewFrame(String msg, String titul, int width, int height) {
         JFrame jfrm = new JFrame(titul);
         jfrm.setSize(width, height);
         jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,11 +114,11 @@ public class ViewFrame {
     public static void AskUserData() {
         JFrame jfrm0 = new JFrame("Input Login");
         do {
-            UserLogin = JOptionPane.showInputDialog( jfrm0, "Input Login: ", new String(""));
+            UserLogin = JOptionPane.showInputDialog(jfrm0, "Input Login: ", new String(""));
         } while (UserLogin.isEmpty());
         JFrame jfrm1 = new JFrame("Input password");
         do {
-            UserPass = JOptionPane.showInputDialog( jfrm1, "Input password for user " + UserLogin + ": ", new String(""));
+            UserPass = JOptionPane.showInputDialog(jfrm1, "Input password for user " + UserLogin + ": ", new String(""));
         } while (UserPass.isEmpty());
     }
 

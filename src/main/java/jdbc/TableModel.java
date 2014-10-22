@@ -1,6 +1,8 @@
 package jdbc;
 
 import javax.swing.table.DefaultTableModel;
+import java.math.BigDecimal;
+import java.util.Date;
 
 public class TableModel extends DefaultTableModel{
 
@@ -14,6 +16,27 @@ public class TableModel extends DefaultTableModel{
         if (column == 0) return false;
         return true;
     };
-
-
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        switch (columnIndex) {
+            //ВНИМАНИЕ! не перепутать Long и Integer
+            case 0: return String.class;
+            case 1: return BigDecimal.class;
+            case 2: return BigDecimal.class;
+            case 3: return String.class;
+            case 4: return String.class;
+            case 5: return String.class;
+            case 6: return String.class;
+            case 7: return BigDecimal.class;
+        }
+        return null;
+//        res[0] = SuplIDName;
+//        res[1] = SuplIDServiceQty;
+//        res[2] = SuplIDServiceVolume.setScale(2, RoundingMode.FLOOR);
+//        res[3] = new SimpleDateFormat("dd.MM.yyyy").format( LastCheckDate);
+//        res[4] = new SimpleDateFormat("dd.MM.yyyy").format( LastServiceShipmentDate );
+//        res[5] = new SimpleDateFormat("dd.MM.yyyy").format( LastServiceReceipDate);
+//        res[6] = new SimpleDateFormat("dd.MM.yyyy").format( TheOldestServicePosition);
+//        res[7] = ReadyForShipmentQty;
+    }
 }
