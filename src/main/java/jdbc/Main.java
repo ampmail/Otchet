@@ -49,6 +49,7 @@ public class Main {
                 Date LastServiceReceipDate = null;
                 Date TheOldestServicePosition = null;
                 Integer ReadyForShipmentQty = null;
+
                 SimpleDateFormat format;
                 Object queryResult = null;
 
@@ -58,7 +59,8 @@ public class Main {
                     //SuplIDServiceQty
                     selectTableSQL = "SELECT COUNT(*) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID = " + suplId.toString();
                     queryResult = Connect.getMetaData(selectTableSQL);
-                    SuplIDServiceQty = new Integer(queryResult.toString());
+//                    SuplIDServiceQty = new Integer(queryResult.toString());
+                    SuplIDServiceQty = (Integer)queryResult;
 //                    System.out.print(SuplIDServiceQty + "\t");
 
                     //SuplIDServiceVolume

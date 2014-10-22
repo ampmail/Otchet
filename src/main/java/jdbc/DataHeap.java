@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DataHeap{
     private String SuplIDName;
-    private int SuplID;
+    private Integer SuplID;
     private Integer SuplIDServiceQty;
     private BigDecimal SuplIDServiceVolume;
     private Date LastCheckDate;
@@ -34,16 +34,16 @@ public class DataHeap{
         this.TheOldestServicePosition = TheOldestServicePosition;
         this.ReadyForShipmentQty = ReadyForShipmentQty;
     }
-    public String[] toArray(){
-        String [] res = new String [8];
+    public Object[] toArray(){
+        Object [] res = new Object [8];
         res[0] = SuplIDName;
-        res[1] = SuplIDServiceQty.toString();
+        res[1] = SuplIDServiceQty;
         res[2] = SuplIDServiceVolume.setScale(2, RoundingMode.FLOOR).toString();
         res[3] = new SimpleDateFormat("dd.MM.yyyy").format( LastCheckDate);
         res[4] = new SimpleDateFormat("dd.MM.yyyy").format( LastServiceShipmentDate );
         res[5] = new SimpleDateFormat("dd.MM.yyyy").format( LastServiceReceipDate);
         res[6] = new SimpleDateFormat("dd.MM.yyyy").format( TheOldestServicePosition);
-        res[7] = ReadyForShipmentQty.toString();
+        res[7] = ReadyForShipmentQty;
         return res;
     }
 }

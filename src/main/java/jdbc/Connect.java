@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 public class Connect {
     private static java.sql.Connection con = null;
-    //    private final String url = "jdbc:sqlserver://192.168.3.231\\";
-    private final String url = "jdbc:sqlserver://www.dclink.com.ua\\";
+        private final String url = "jdbc:sqlserver://192.168.3.231\\";
+//    private final String url = "jdbc:sqlserver://www.dclink.com.ua\\";
     private final String serverName = "SQL";
     private final String portNumber = "1433";
     private final String databaseName = "skl2008";
