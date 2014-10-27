@@ -2,13 +2,13 @@ package jdbc;
 
 import javax.swing.table.DefaultTableModel;
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class TableModel extends DefaultTableModel{
 
     private static final long serialVersionUID = 1L;
 
     public TableModel (String[] fields){
+
         for(String field : fields) this.addColumn(field);
     }
     @Override
