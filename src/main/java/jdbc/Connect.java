@@ -4,17 +4,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ResourceBundle;
 
 public class Connect {
     private static java.sql.Connection con = null;
-        private final String url = "jdbc:sqlserver://192.168.3.231\\";
-//    private final String url = "jdbc:sqlserver://www.dclink.com.ua\\";
-    private final String serverName = "SQL";
-    private final String portNumber = "1433";
-    private final String databaseName = "skl2008";
     private String userName;
     private String password;
-    private final String selectMethod = "cursor";
     private StringBuilder Sout;
 
     public Connect(String userName, String password) {
@@ -22,14 +17,27 @@ public class Connect {
         this.password = password;
     }
 
-    private String getConnectionUrl() {
-        return url + serverName + ":" + portNumber + ";databaseName=" + databaseName + ";selectMethod=" + selectMethod + ";";
-    }
-
     private java.sql.Connection getConnection() throws SQLException, ClassNotFoundException {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            con = java.sql.DriverManager.getConnection(getConnectionUrl(), userName, password);
+
+            ResourceBundle rb = ResourceBundle.getBundle("db");
+            String connectionString = new StringBuilder("")
+                    .append("jdbc:sqlserver://")
+                    .append(rb.getString("db.host"))
+                    .append('\\')
+                    .append(rb.getString("db.serverName"))
+                    .append(":")
+                    .append(rb.getString("db.port"))
+                    .append(";databaseName=")
+                    .append(rb.getString("db.name"))
+                    .append(";selectMethod=")
+                    .append(rb.getString("db.selectMethod"))
+                    .append(";")
+                    .toString();
+
+            con = java.sql.DriverManager.getConnection(connectionString,
+                    rb.getString("db.user"), rb.getString("db.password"));
             if (con != null) System.out.println("Connection Successful!");
         } catch (ClassNotFoundException e) {
 //            e.printStackTrace();
@@ -103,8 +111,8 @@ public class Connect {
 
         try {
             if (con != null) {
-                java.sql.ResultSet rs = null;
-                Statement statement = null;
+                java.sql.ResultSet rs;
+                Statement statement;
                 statement = con.createStatement();
                 rs = statement.executeQuery(SQLstring);
                 if (rs.next()) {

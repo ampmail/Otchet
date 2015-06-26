@@ -25,6 +25,9 @@
         <module name="Otchet" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Otchet" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

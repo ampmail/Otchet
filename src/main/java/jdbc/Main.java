@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -21,14 +23,14 @@ public class Main {
     public static void main(String[] args) {
 
         ViewFrame otchetFrame = new ViewFrame();
-        otchetFrame.AskUserData();
+//        otchetFrame.AskUserData();
         Connect myDbTest = new Connect(ViewFrame.getUserLogin(), otchetFrame.getUserPass());
 
         try {
 //        	myDbTest.collectDbProperties();
 //          otchetFrame.viewDBData(myDbTest.getDBConnData());
 
-            String selectTableSQL = "SELECT" + createSelectLine(selectedSuplIDFields) + " FROM dbo.brak WHERE tip_vozvr = 1";
+            String selectTableSQL = "SELECT suplID FROM dbo.brak WHERE tip_vozvr = 1";
             rs = myDbTest.getDBData(selectTableSQL);
             if (rs != null) {
                 String tempString = "";
@@ -44,19 +46,24 @@ public class Main {
                         }
                     }
                 }
+//                System.out.println(Connect.getKlientName(4681));
+
 //                System.out.println(Arrays.toString(suplID.toArray()));
 //                System.out.println(suplIdToName.toString());
 
-                Integer SuplIDServiceQty = null;
-                BigDecimal SuplIDServiceVolume = null;
-                Date LastCheckDate = null;
-                Date LastServiceShipmentDate = null;
-                Date LastServiceReceipDate = null;
-                Date TheOldestServicePosition = null;
-                Integer ReadyForShipmentQty = null;
-
+                Integer SuplIDServiceQty = new Integer(0);
+                BigDecimal SuplIDServiceVolume = new BigDecimal(0);
                 SimpleDateFormat format;
-                Object queryResult = null;
+                format = new SimpleDateFormat("yyyy-MM-dd");
+                Date LastCheckDate;
+                LastCheckDate = format.parse("2000-01-01");
+
+                Date LastServiceShipmentDate;
+                Date LastServiceReceipDate;
+                Date TheOldestServicePosition;
+                Integer ReadyForShipmentQty = new Integer(0);
+
+                Object queryResult;
 
                 f = new JFrame("Processing database request");
                 f.setDefaultCloseOperation(JFrame.ICONIFIED);
@@ -71,26 +78,49 @@ public class Main {
                 f.setVisible(true);
                 double valueStep = 100.0 / suplID.size();
                 double value = 0.0;
+                String supl;
 
                 for (Integer suplId : suplID) {
-//                    System.out.println(suplIdToName.get(suplId) + "\t");
+                    supl = suplIdToName.get(suplId);
+//                    if("po.ua".compareTo(supl) == 0 ||
+//                            "Grand-X".compareTo(supl) == 0 ||
+//                            "i-Smile".compareTo(supl) == 0 ||
+//                            "novella_грн".compareTo(supl) == 0){
+//                        continue;
+//                    }
+                    System.out.println(supl + "\t");
 
-                    border = BorderFactory.createTitledBorder(suplIdToName.get(suplId));
+//                    border = BorderFactory.createTitledBorder(supl);
                     value += valueStep;
-                    progressBar.setValue((int)value);
+                    progressBar.setValue((int) value);
+
+//                    selectTableSQL = "SELECT COUNT(*), SUM(cost2), MAX(d_otpr), MIN(d_otpr) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID =" + suplId.toString();
+//                    queryResult = Connect.getMetaData(selectTableSQL);
+//                    ResultSet resultSet = statement.executeQuery();
+//                    while (queryResult.next()) {
+//                        employerId = (resultSet.getLong("id"));
+//                    }
+
 
                     //SuplIDServiceQty
                     selectTableSQL = "SELECT COUNT(*) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID = " + suplId.toString();
                     queryResult = Connect.getMetaData(selectTableSQL);
-//                    SuplIDServiceQty = new Integer(queryResult.toString());
-                    SuplIDServiceQty = (Integer)queryResult;
-//                    System.out.print(SuplIDServiceQty + "\t");
+                    if (queryResult != null) {
+                        SuplIDServiceQty = (Integer) queryResult;
+                        System.out.println(queryResult.toString());
+                    } else {
+                        SuplIDServiceQty = 0;
+                    }
 
                     //SuplIDServiceVolume
                     selectTableSQL = "SELECT SUM(cost2) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID = " + suplId.toString();
                     queryResult = Connect.getMetaData(selectTableSQL);
-                    SuplIDServiceVolume = new BigDecimal(queryResult.toString());
-//                    System.out.print(SuplIDServiceVolume.setScale(2, RoundingMode.FLOOR) + "\t");
+                    if (queryResult != null) {
+                        SuplIDServiceVolume = new BigDecimal(queryResult.toString());
+                        System.out.println(queryResult.toString());
+                    } else {
+                        SuplIDServiceVolume = new BigDecimal(0);
+                    }
 
                     //LastCheckDate
 //                    System.out.print("онлайн сверка\t");
@@ -100,56 +130,63 @@ public class Main {
                     queryResult = Connect.getMetaData(selectTableSQL);
                     format = new SimpleDateFormat("yyyy-MM-dd");
                     try {
-                        LastServiceShipmentDate = format.parse( queryResult.toString() );
+                        LastServiceShipmentDate = format.parse(queryResult.toString());
                     } catch (Exception e) {
-//                        e.printStackTrace();
-                        LastServiceShipmentDate = format.parse( "2000-01-01" );
+                        LastServiceShipmentDate = format.parse("2000-01-01");
                     }
-//                    System.out.print(LastServiceShipmentDate + "\t");
-
-                    //LastServiceReceipDate
-                    selectTableSQL = "SELECT MAX(d_vozvr) FROM dbo.brak WHERE (tip_vozvr = 2 OR tip_vozvr = 3 OR " +
-                            "tip_vozvr = 4 OR tip_vozvr = 5) AND suplID = " + suplId.toString();
-                    queryResult = Connect.getMetaData(selectTableSQL);
-                    format = new SimpleDateFormat("yyyy-MM-dd");
-                    try {
-                        LastServiceReceipDate = format.parse( queryResult.toString() );
-                    } catch (Exception e) {
-//                        e.printStackTrace();
-                        LastServiceReceipDate = format.parse( "2000-01-01" );
+                    if (queryResult != null) {
+                        System.out.println(queryResult.toString());
                     }
-//                    System.out.print(LastServiceReceipDate + "\t");
 
                     //TheOldestServicePosition
                     selectTableSQL = "SELECT MIN(d_otpr) FROM dbo.brak WHERE tip_vozvr = 1 AND suplID = " + suplId.toString();      //
                     queryResult = Connect.getMetaData(selectTableSQL);
                     format = new SimpleDateFormat("yyyy-MM-dd");
                     try {
-                        TheOldestServicePosition = format.parse( queryResult.toString() );
+                        TheOldestServicePosition = format.parse(queryResult.toString());
                     } catch (Exception e) {
-//                        e.printStackTrace();
-                        TheOldestServicePosition = format.parse( "2000-01-01" );
+                        TheOldestServicePosition = format.parse("2000-01-01");
                     }
-//                    System.out.print(TheOldestServicePosition + "\t");
+                    if (queryResult != null) {
+                        System.out.println(queryResult.toString());
+                    }
 
                     //ReadyForShipmentQty
                     selectTableSQL = "SELECT COUNT(*) FROM dbo.brak WHERE tip_vozvr = 0 AND suplID = " + suplId.toString();
                     queryResult = Connect.getMetaData(selectTableSQL);
-                    ReadyForShipmentQty = new Integer(queryResult.toString());
-//                    System.out.print(ReadyForShipmentQty + "\t");
+                    if (queryResult != null) {
+                        ReadyForShipmentQty = new Integer(queryResult.toString());
+                        System.out.println(queryResult.toString());
+                    } else {
+                        ReadyForShipmentQty = 0;
+                    }
 
-//                    System.out.println();
+                    //LastServiceReceipDate
+                    selectTableSQL = "SELECT MAX(d_vozvr) FROM dbo.brak WHERE (tip_vozvr = 2 OR tip_vozvr = 3 OR " +
+                            "tip_vozvr = 4 OR tip_vozvr = 5) AND suplID = " + suplId.toString();
+                    queryResult = Connect.getMetaData(selectTableSQL);
+                    try {
+                        LastServiceReceipDate = format.parse(queryResult.toString());
+                    } catch (Exception e) {
+                        LastServiceReceipDate = format.parse("2000-01-01");
+                    }
+                    if (queryResult == null) {
+                        System.out.println("queryResult = null");
+                        System.out.println(selectTableSQL);
+                    } else {
+                        System.out.println(queryResult.toString());
+                    }
 
-                    LastCheckDate = format.parse( "2000-01-01" );
-                    DataHeap dh = new DataHeap(suplId, suplIdToName.get(suplId),
+                    resultData.add(new DataHeap(suplId,
+                            suplIdToName.get(suplId),
                             SuplIDServiceQty,
                             SuplIDServiceVolume,
                             LastCheckDate,
                             LastServiceShipmentDate,
                             LastServiceReceipDate,
                             TheOldestServicePosition,
-                            ReadyForShipmentQty);
-                    resultData.add(dh);
+                            ReadyForShipmentQty));
+                    System.out.println();
                 }
             }
             rs.close();
@@ -164,7 +201,7 @@ public class Main {
             }
             System.out.println("Connection closed");
         }
-        String [] fieldsToShow = {"Поставщик",
+        String[] fieldsToShow = {"Поставщик",
                 "кол-во товара\nв браке (шт)",
                 "кол-во товара\nв браке (уе)",
                 "дата последней\nсверки",
@@ -173,9 +210,9 @@ public class Main {
                 "самая старая\nпозиция (по дате)",
                 "готово\nк отправке"};
 
-        if (!resultData.isEmpty()){
+        if (!resultData.isEmpty()) {
             f.setVisible(false);
-            otchetFrame.ShowDataInTable( resultData, fieldsToShow);
+            otchetFrame.ShowDataInTable(resultData, fieldsToShow);
         }
 //        System.exit(0);
     }
